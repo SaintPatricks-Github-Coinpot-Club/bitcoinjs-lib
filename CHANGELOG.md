@@ -1,3 +1,37 @@
+# 7.0.1
+__added__
+- `crypto`: Restore `ripemd160`, `sha1`, and `sha256` hash helpers (#2248)
+- `p2ms`: Support up to 20 public keys for n-of-20 multisig (previously capped at 16). This is relevant for P2WSH-wrapped multisig where the P2SH script-size limit does not apply. (#2297)
+
+__fixed__
+- `psbt`: Remove unnecessary `tapInternalKey` check for signature validation of taproot inputs (#2270)
+- Bump `valibot` dependency (#2308)
+
+# 7.0.0
+__breaking__
+- **Buffer → Uint8Array**: All public APIs now use standard `Uint8Array` instead of Node.js `Buffer`. This affects all payment types, `Transaction`, `Psbt`, `Block`, and `script` modules. `Buffer` (a `Uint8Array` subclass) is still accepted as input, but return types are now `Uint8Array`. (#2161)
+- **Transaction values: number → bigint**: `Transaction.Output.value` changed from `number` to `bigint`. `Psbt` output values, `Psbt.getFee()`, and `witnessUtxo.value` are all `bigint` now. Update your code: `value: 10000` → `value: BigInt(10000)` or `value: 10000n`.
+- **typeforce → valibot**: Runtime type validation switched from `typeforce` to `valibot`. All `typeforce` re-exports removed (`Buffer256bit`, `Hash160bit`, `Hash256bit`, `Number`, `Array`, `Boolean`, `String`, `Buffer`, `Hex`, `UInt8`, `UInt32`, `BufferN`, `Null`, `oneOf`, `maybe`, `tuple`, `Function`, `Satoshi`). Replaced by valibot schemas (`Buffer256bitSchema`, `Hash160bitSchema`, `Hash256bitSchema`, `BufferSchema`, `HexSchema`, `UInt8Schema`, `UInt32Schema`, `SatoshiSchema`, `NBufferSchemaFactory`).
+- **ESM support**: Package is now dual CJS/ESM. Added `"type": "module"` and `exports` field in `package.json`. CJS files use `.cjs` extension. Internal import paths now require `.js` extension.
+- **Node.js ≥ 18 required**: Minimum Node.js version bumped from 8 to 18.
+- **Dependency major bumps**: `bip174` 2.x → 3.x, `bs58check` 3.x → 4.x, `varuint-bitcoin` 1.x → 2.x.
+
+__added__
+- `uint8array-tools` dependency for cross-platform Uint8Array utilities
+- `valibot` dependency for runtime type validation
+- `toXOnly` exported from `psbt/bip371`
+- Taproot multisig with verified unspendable internalPubkey example
+- Better error message when signing a transaction without outputs
+
+__changed__
+- Coverage tooling switched from `nyc` to `c8`
+- TypeScript execution switched from `ts-node` to `tsx`
+- Fix tx version read/write to use uint32 instead of int32
+
+__fixed__
+- Fix multisig taproot example's provable nonce calculation
+- Various typo fixes
+
 # 6.1.7
 __added__
 - skip ecc library verification via DANGER_DO_NOT_VERIFY_ECCLIB flag
